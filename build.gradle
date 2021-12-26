@@ -1,0 +1,45 @@
+plugins {
+    id 'application'
+    id 'java'
+    id 'idea'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+startScripts.enabled = false
+
+
+task Server(type: CreateStartScripts)
+{
+    mainClass = 'Server'
+    applicationName = 'server'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
+}
+task Client(type: CreateStartScripts)
+{
+    mainClass = 'Client'
+    applicationName = 'client'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
+}
+
+applicationDistribution.into('bin') {
+    from(Server)
+    from(Client)
+    fileMode = 0755
+}
